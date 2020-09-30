@@ -1,0 +1,425 @@
+@import '_variable.scss';
+@import '_mixins.scss';
+
+/*
+  Nearly all top-level elements should ideally follow this format:
+
+  An Outer Element (defines any vertical spacing, should not have any left/right padding)
+    .container (that defines the standard outer width/margin of all inner columns/rows, if any)
+      .row[-*] or .column[-*] class (defines column or row structure and alignment, but should only have flex props applied, no margins or padding of its own)
+        an inner element or .col[-*-#] class (col[-*-#] margins define the per item spacing, padding is for inner contents)
+
+
+    .container is not meant to be nested at any depth (i.e. avoid .container .container: if an inner element should have padding, set it explictly or base it off of the same value as $desktop-outer-padding)
+
+    .inner elements with .col[-*-#] can safely have a .column[-*] class if their contents are laid out vertically
+
+    The .container and the outer element can be combined, provided no modifications are made to the .container class itself and the outer element never specifies its own left/right padding or margins (if this is needed, it probably makes more sense to either create another more globally useful .container[-] class or else rely on a specific element to act as a container)
+
+    margin: 0 auto; is very powerful, but it's often not what is needed as a default for flex alignment
+  */
+
+$container-small-outer-maxwidth: $content-small-outer-width +
+  ($desktop-outer-padding * 2); //size of widest content container
+$container-outer-maxwidth: $content-outer-width + ($desktop-outer-padding * 2); //size of widest content container
+$container-wide-outer-maxwidth: $content-wide-outer-width +
+  ($desktop-outer-padding * 2); //size of widest wide content container
+
+main {
+  position: relative;
+}
+
+.clearfix:before,
+.clearfix:after {
+  content: ' ';
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+
+//  a fluid container with no max-width, just the standard outer margins
+.container-fluid {
+  @extend .clearfix;
+  padding: 0 $mobile-outer-padding;
+  width: 100%;
+
+  @include breakpoint($bp-charlie) {
+    padding: 0 $desktop-outer-padding;
+  }
+}
+
+//our standard outer content container, defines the widest ANY normal element should be
+.container {
+  @extend .container-fluid;
+  margin: 0 auto;
+  max-width: 100vw;
+
+  @include breakpoint($bp-charlie) {
+    max-width: $container-outer-maxwidth;
+  }
+}
+
+.container-small {
+  @extend .container-fluid;
+  margin: 0 auto;
+  max-width: 100vw;
+
+  @include breakpoint($bp-charlie) {
+    max-width: $container-small-outer-maxwidth;
+  }
+}
+
+.container-wide {
+  @extend .container-fluid;
+  margin: 0 auto;
+  max-width: 100vw;
+
+  @include breakpoint($bp-charlie) {
+    max-width: $container-wide-outer-maxwidth;
+  }
+}
+
+// the main element for main site content outside or header/footer
+// hr has moved to typography
+
+.content {
+  width: 100%;
+  //bottom-share has moved to elements/bottom-share
+}
+
+%vertical-margins-items {
+  margin-top: $margin-medium;
+  margin-bottom: $margin-medium;
+  // @include breakpoint($bp-charlie) {
+  //   margin-top: $margin-large;
+  //   margin-bottom: $margin-large;
+  // }
+}
+
+%vertical-margins-modules {
+  margin-top: $module-margin-small;
+  @include breakpoint($bp-charlie) {
+    margin-top: $module-margin-medium;
+  }
+  @include breakpoint($bp-bobby) {
+    margin-top: $module-margin-large;
+  }
+}
+
+//large, non-collapsing section padding
+%vertical-margins-sections {
+  padding-top: $section-margin-small;
+  padding-bottom: $section-margin-small;
+  @include breakpoint($bp-charlie) {
+    padding-top: $section-margin-medium;
+    padding-bottom: $section-margin-medium;
+  }
+  @include breakpoint($bp-bobby) {
+    padding-top: $section-margin-large;
+    padding-bottom: $section-margin-large;
+  }
+}
+
+/* Grid Layout */
+
+$col-breakpoint-map: (
+  xs: (
+    // everything full width until 480px
+      min-width: $bp-bravo,
+    margin: $margin-small,
+    square-margin: $square-margin-small,
+    thin-margin: $thin-margin-small,
+    index: 1,
+  ),
+  sm: (
+    // starts at 575, many modern phones, $bp-colin
+      min-width: $bp-colin,
+    margin: $margin-medium,
+    square-margin: $square-margin-small,
+    thin-margin: $thin-margin-small,
+    index: 2,
+  ),
+  md: (
+    // 768, ~base tablet
+      min-width: $bp-charlie,
+    margin: $margin-medium,
+    square-margin: $square-margin-medium,
+    thin-margin: $thin-margin-large,
+    index: 3,
+  ),
+  lg: (
+    // 992, ~small desktop
+      min-width: $bp-bobby,
+    margin: $margin-medium,
+    square-margin: $square-margin-medium,
+    thin-margin: $thin-margin-large,
+    index: 4,
+  ),
+  xlg: (
+    // 1250, ~roomy desktop
+      min-width: $bp-echo,
+    margin: $margin-large,
+    square-margin: $square-margin-large,
+    thin-margin: $thin-margin-large,
+    index: 5,
+  ),
+);
+
+$col-width-map: (
+  12: 100%,
+  11: 91.66666667%,
+  10: 83.333333333%,
+  9: 75%,
+  8: 66.66666667%,
+  7: 58.33333%,
+  6: 50%,
+  5: 41.66667%,
+  4: 33.33333333%,
+  3: 25%,
+  2: 17.666666667%,
+  1: 8.333333333%,
+);
+
+// basic row. A row element should almost never have further layout related css props (margins/padding/etc.)
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center; // left aligned by default
+  flex: 1 0 auto;
+  max-width: 100vw;
+  width: 100%;
+}
+
+//a row that centers inner items if they're smaller than 100%
+.row-center {
+  @extend .row;
+  justify-content: center;
+}
+
+// rows, like the nav bar, that should never wrap or add extra margins
+.single-row {
+  @extend .row;
+  flex-wrap: nowrap;
+  margin-bottom: 0;
+  max-height: 100%;
+  height: 100%;
+
+  [class*='col-'] {
+    margin-bottom: 0;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+//basic columns
+[class*='col-'] {
+  flex-grow: 1;
+  flex-basis: auto;
+  width: 100%;
+  min-height: 1px;
+}
+
+// an auto-sizing column
+.col {
+  flex: 1 0 auto;
+  align-items: center;
+}
+.col-shrink {
+  flex-shrink: 1;
+  flex-grow: 1;
+  flex-basis: 0;
+  align-items: center;
+}
+
+// sets base for all collumns
+// @each $col, $width in $col-width-map {
+//   @each $device-size, $breakpoint in $col-breakpoint-map {
+//     .col-#{$device-size}-#{$col} {
+//       width: 100%;
+//       flex: 1 0 auto;
+//       margin-bottom: map-get(map-get($col-breakpoint-map, 'xs'), 'margin');
+//     }
+//   }
+// }
+
+.square-grid [class*='col-'] {
+  padding-top: calc(100% - #{($margin-small * 2)});
+}
+
+// ultimately this'll be better done with grid and/or the new gap property
+[class*='row-grid-'] {
+  @extend .row;
+  width: auto;
+  margin: -($margin-small);
+
+  .wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  [class*='col-'] {
+    margin: $margin-small;
+  }
+
+  // if grid items are not justify:flex-start but widows shoudl still align left instead of center...
+  // [class*='col-']:last-child {
+  //   margin-right: auto !important; // controls how final items can work in a last unfilled row, overrides main margin
+  // }
+}
+
+@each $device-size, $breakpoint in $col-breakpoint-map {
+  .row-grid-#{$device-size} {
+    @each $device-size-inner, $breakpoint-inner in $col-breakpoint-map {
+      $index: map-get($breakpoint, 'index');
+      $index-inner: map-get($breakpoint-inner, 'index');
+      $thin-margin: map-get($breakpoint, 'thin-margin');
+      $square-margin: map-get($breakpoint, 'square-margin');
+
+      @if ($index >= $index-inner) {
+        $margin: map-get($breakpoint-inner, 'margin');
+        @include breakpoint(map-get($breakpoint-inner, 'min-width')) {
+          margin: -($margin / 2);
+          &.thin-margin {
+            margin: -($thin-margin / 2);
+          }
+          &.square-grid {
+            margin: -$square-margin / 2;
+          }
+        }
+      }
+    }
+  }
+}
+
+// define all column widths and variations for all breakpoints
+@each $device-size, $breakpoint in $col-breakpoint-map {
+  @if map-get($breakpoint, 'min-width') {
+    @include breakpoint(map-get($breakpoint, 'min-width')) {
+      $margin: map-get($breakpoint, 'margin');
+      $square-margin: map-get($breakpoint, 'square-margin');
+      $thin-margin: map-get($breakpoint, 'thin-margin');
+
+      @each $col, $width in $col-width-map {
+        $numcols: (12 / $col);
+
+        .col-#{$device-size}-#{$col} {
+          flex-basis: calc(
+            #{$width} - #{(($numcols - 1) * $margin) / $numcols}
+          );
+          max-width: calc(#{$width} - #{(($numcols - 1) * $margin) / $numcols});
+          //margin-bottom: 0;
+        }
+        [class*='row-grid-'] {
+          .col-#{$device-size}-#{$col} {
+            max-width: calc(#{$width} - #{($margin / 1)});
+            margin: $margin / 2;
+            flex-basis: calc(#{$width} - #{($margin / 1)});
+          }
+        }
+        .square-grid {
+          .col-#{$device-size}-#{$col} {
+            padding-top: calc(#{$width} - #{($square-margin / 1)});
+            max-width: calc(#{$width} - #{($square-margin / 1)});
+            margin: $square-margin / 2;
+            flex-basis: calc(#{$width} - #{($square-margin / 1)});
+          }
+        }
+        .thin-margin {
+          .col-#{$device-size}-#{$col} {
+            max-width: calc(#{$width} - #{($thin-margin / 1)});
+            margin: $thin-margin / 2;
+            flex-basis: calc(#{$width} - #{($thin-margin / 1)});
+          }
+        }
+      }
+      // .square-grid {
+      //   margin: -$square-margin / 2;
+      //   zoom: $square-margin;
+      // }
+      .thin-margin {
+        margin: -$thin-margin / 2;
+      }
+    }
+  }
+}
+
+// all vertical wrappers
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+// vertical layouts
+.column {
+  display: flex;
+  flex-direction: column;
+  min-height: 1px;
+  position: relative;
+
+  // bottom/left alignment
+  justify-content: center;
+  // align-content: flex-start;
+
+  .col {
+    flex: 0 0 auto;
+  }
+}
+
+// handles cases where a `nav > ul > li > a` structure is mandatory in markup
+.flex-list {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  & > ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    & > li {
+      display: inline-flex;
+      align-items: stretch;
+      list-style-type: none;
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+      a {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1 0 auto;
+      }
+    }
+  }
+  .single-row & {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Skip Link Navigation */
+.screenreader-text {
+  position: absolute;
+  left: -999px;
+  width: 1px;
+  height: 1px;
+  top: auto;
+
+  &:focus {
+    padding: 10px 20px;
+    color: #ffffff;
+    display: inline-block;
+    height: auto;
+    width: auto;
+    position: static;
+    margin: auto;
+  }
+}
