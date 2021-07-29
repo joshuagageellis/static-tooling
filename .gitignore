@@ -1,3 +1,6 @@
 node_modules/
+./dist/*.*.css
+./dist/*.*.js
 ./dist/*.css
 ./dist/*.js
+yarn-error.log
