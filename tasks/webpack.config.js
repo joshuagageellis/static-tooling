@@ -3,7 +3,7 @@ const loaders = require('./loaders');
 const plugins = require('./plugins');
 
 module.exports = {
-  mode: 'development',
+  mode: process.env.NODE_ENV,
   entry: ['./src/index.js'],
   devtool: 'inline-source-map',
   module: {
@@ -18,7 +18,7 @@ module.exports = {
   plugins: [
     plugins.MiniCssExtractPlugin,
     plugins.StyleLintPlugin,
-    plugins.HtmlCriticalWebpackPlugin,
+    // plugins.HtmlCriticalWebpackPlugin,
     plugins.ESLintPlugin
   ],
   output: {
