@@ -12,7 +12,7 @@
   "engines": {
     "node": ">= 14.0.0"
   },
-  "author": "Wide Eye Creative",
+  "author": "Joshua Ellis",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.5.5",
