@@ -2,7 +2,7 @@ const path = require('path');
 const _MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const _StyleLintPlugin = require('stylelint-webpack-plugin');
 const _HtmlCriticalWebpackPlugin = require("html-critical-webpack-plugin");
-// const _CompressionPlugin = require('compression-webpack-plugin');
+const _ESLintPlugin = require('eslint-webpack-plugin');
 
 const MiniCssExtractPlugin = new _MiniCssExtractPlugin({
   filename: '[name].bundle.css',
@@ -31,14 +31,17 @@ const HtmlCriticalWebpackPlugin = new _HtmlCriticalWebpackPlugin({
   }
 });
 
-
-// const CompressionPlugin = new _CompressionPlugin({
-//   test: /\.js(\?.*)?$/i
-// });
+const ESLintPlugin = new _ESLintPlugin({
+  overrideConfigFile: path.resolve(__dirname, '../.eslintrc'),
+  extensions: [`js`, `jsx`],
+  exclude: [
+    `/node_modules/`,
+  ],
+})
 
 module.exports = {
   MiniCssExtractPlugin: MiniCssExtractPlugin,
   StyleLintPlugin: StyleLintPlugin,
-  HtmlCriticalWebpackPlugin: HtmlCriticalWebpackPlugin
-  // CompressionPlugin: CompressionPlugin
+  HtmlCriticalWebpackPlugin: HtmlCriticalWebpackPlugin,
+  ESLintPlugin: ESLintPlugin
 };

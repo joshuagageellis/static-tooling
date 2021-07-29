@@ -15,21 +15,6 @@ const JSLoader = {
     }
   }
 };
-module.exports = {
-  JSLoader: JSLoader
-};
-
-const ESLintLoader = {
-  test: /\.js$/,
-  enforce: 'pre',
-  exclude: /node_modules/,
-  use: {
-    loader: 'eslint-loader',
-    options: {
-      configFile: __dirname + '/.eslintrc'
-    },
-  }
-};
 
 const CSSLoader = {
   test: /\.scss$/,
@@ -56,21 +41,14 @@ const CSSLoader = {
         loader: 'sass-loader',
         options: {
           sourceMap: false,
-          outputStyle: 'nested',
-          implementation: require('node-sass')
+          // Prefer dart sass.
+          implementation: require('sass')
         }
-    }, {
-      loader: 'sass-resources-loader',
-      options: {
-        sourceMap: false,
-        resources:  './src/scss/**/*.scss',
-      }
-    },
+    }
   ],
 };
 
 module.exports = {
   JSLoader: JSLoader,
-  ESLintLoader: ESLintLoader,
   CSSLoader: CSSLoader,
 };

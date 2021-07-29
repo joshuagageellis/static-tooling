@@ -10,7 +10,6 @@ module.exports = {
     rules: [
       loaders.CSSLoader,
       loaders.JSLoader,
-      loaders.ESLintLoader,
     ]
   },
   devServer: {
@@ -19,8 +18,8 @@ module.exports = {
   plugins: [
     plugins.MiniCssExtractPlugin,
     plugins.StyleLintPlugin,
-    plugins.HtmlCriticalWebpackPlugin
-    // plugins.CompressionPlugin,
+    plugins.HtmlCriticalWebpackPlugin,
+    plugins.ESLintPlugin
   ],
   output: {
     path: path.resolve(__dirname, '../dist'),
