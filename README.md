@@ -3,7 +3,7 @@
 ## Development Instructions
 ### Set Up
 1. Clone repo
-2. Ensure using `node >=v10`
+2. Ensure using `node >=v14`
 3. Run `yarn add` to download npm modules
 
 ### Build Process

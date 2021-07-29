@@ -10,7 +10,7 @@
     "start": "webpack-dev-server --node-env=development --config ./tasks/webpack.config.js --open"
   },
   "engines": {
-    "node": ">= 10.0.0"
+    "node": ">= 14.0.0"
   },
   "author": "Wide Eye Creative",
   "license": "ISC",
