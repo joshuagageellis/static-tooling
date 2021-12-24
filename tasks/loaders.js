@@ -33,8 +33,8 @@ const CSSLoader = {
     }, {
       loader: 'postcss-loader',
       options: {
-        config: {
-          path: __dirname + '/postcss.config.js'
+        postcssOptions: {
+          config: __dirname + '/postcss.config.js'
         }
       }
     }, {
